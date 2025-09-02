@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Numerológica</title>
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --background-color: #f0f2f5;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --heading-color: #1a237e;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-background);
+            padding: 2em;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: var(--heading-color);
+            margin-bottom: 0.5em;
+        }
+
+        p.subtitle {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 2em;
+        }
+
+        .input-group {
+            margin-bottom: 1.5em;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        @media (min-width: 600px) {
+            .input-group {
+                flex-direction: row;
+                gap: 10px;
+            }
+        }
+
+        .input-field {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .input-field input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+
+        .input-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        button {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #1e5ab8;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+
+        #results {
+            margin-top: 2em;
+            text-align: left;
+            border-top: 2px solid #eee;
+            padding-top: 2em;
+        }
+
+        .result-item {
+            margin-bottom: 1.5em;
+            line-height: 1.6;
+        }
+
+        .result-item h3 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .result-item p {
+            margin: 0.5em 0 0;
+            color: #555;
+            font-style: italic;
+        }
+
+        #error-message {
+            color: #d9534f;
+            margin-top: 1em;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Calculadora Numerológica Personal</h1>
+        <p class="subtitle">Descubre los secretos que tu fecha de nacimiento tiene para ti.</p>
+        
+        <div class="input-group">
+            <div class="input-field">
+                <label for="day">Día</label>
+                <input type="number" id="day" placeholder="DD" min="1" max="31">
+            </div>
+            <div class="input-field">
+                <label for="month">Mes</label>
+                <input type="number" id="month" placeholder="MM" min="1" max="12">
+            </div>
+            <div class="input-field">
+                <label for="year">Año</label>
+                <input type="number" id="year" placeholder="AAAA" min="1900" max="2100">
+            </div>
+        </div>
+        
+        <button id="calculate-btn">Calcular mis números</button>
+        <p id="error-message">Por favor, ingresa una fecha de nacimiento válida.</p>
+        
+        <div id="results" class="hidden">
+            <div class="result-item">
+                <h3 id="alma-title">Número de Alma: <span id="alma-result"></span></h3>
+                <p>El **Número de Alma** revela tu esencia interior y los deseos más profundos de tu ser. Describe lo que tu alma anhela para su realización y plenitud. Se trata de tus motivaciones más íntimas, los talentos que te conectan con tu ser auténtico y las verdaderas pasiones que guían tu camino en la vida, a menudo sin que seas plenamente consciente de ello.</p>
+            </div>
+            <div class="result-item">
+                <h3 id="karma-title">Número de Karma: <span id="karma-result"></span></h3>
+                <p>El **Número de Karma** representa las lecciones y desafíos que has traído de vidas pasadas para resolver en la actual. Te ayuda a entender las deudas kármicas que necesitas saldar y las áreas donde requieres más crecimiento personal. Al trabajar en estos aspectos, puedes encontrar paz interior, equilibrio y liberar el potencial de tu camino de vida.</p>
+            </div>
+            <div class="result-item">
+                <h3 id="destino-title">Número de Destino: <span id="destino-result"></span></h3>
+                <p>Tu **Número de Destino** define el camino de vida que has elegido y tu propósito fundamental. Muestra la dirección que tomará tu existencia, las oportunidades y los desafíos que te moldearán a lo largo de los años. Indica el tipo de persona que estás destinado a convertirte, el área en la que tu energía se manifestará con mayor fuerza y los aprendizajes principales que te esperan.</p>
+            </div>
+            <div class="result-item">
+                <h3 id="regalo-title">Número de Regalo: <span id="regalo-result"></span></h3>
+                <p>El **Número de Regalo** son las habilidades y talentos innatos que se te han concedido desde el momento de tu nacimiento, sin necesidad de esfuerzo. Son dones naturales que traes contigo y que puedes utilizar para tu propio beneficio y para ayudar a los demás. Refleja tu potencial y fortalezas inherentes, que a menudo son tan evidentes que a veces no les das la importancia que merecen.</p>
+            </div>
+            <div class="result-item">
+                <h3 id="mision-title">Número de Misión: <span id="mision-result"></span></h3>
+                <p>Tu **Número de Misión** revela tu propósito superior en la vida y la contribución que estás destinado a hacer al mundo. Es el objetivo principal de tu existencia, que se logra al integrar y armonizar las lecciones de tus otros números. Representa la manifestación de tu máximo potencial, el legado que dejarás y la forma en que tu ser impactará positivamente a la humanidad.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function sumDigits(num) {
+            let sum = 0;
+            while (num > 0) {
+                sum += num % 10;
+                num = Math.floor(num / 10);
+            }
+            return sum;
+        }
+
+        function reduceToSingleDigit(num) {
+            while (num > 9 && num !== 11 && num !== 22 && num !== 33) {
+                num = sumDigits(num);
+            }
+            return num;
+        }
+
+        document.getElementById('calculate-btn').addEventListener('click', function() {
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+
+            const errorMessage = document.getElementById('error-message');
+            const resultsDiv = document.getElementById('results');
+
+            if (!day || !month || !year || day > 31 || month > 12) {
+                errorMessage.style.display = 'block';
+                resultsDiv.classList.add('hidden');
+                return;
+            }
+
+            errorMessage.style.display = 'none';
+
+            const dayNum = parseInt(day);
+            const monthNum = parseInt(month);
+            const yearNum = parseInt(year);
+
+            // Calcular Alma (día)
+            const alma = reduceToSingleDigit(sumDigits(dayNum));
+            document.getElementById('alma-result').textContent = alma;
+
+            // Calcular Karma (mes)
+            const karma = reduceToSingleDigit(sumDigits(monthNum));
+            document.getElementById('karma-result').textContent = karma;
+
+            // Calcular Destino (día + mes + año)
+            const destino = reduceToSingleDigit(sumDigits(dayNum) + sumDigits(monthNum) + sumDigits(yearNum));
+            document.getElementById('destino-result').textContent = destino;
+
+            // Calcular Regalo (dos últimos dígitos del año)
+            const lastTwoYearDigits = yearNum % 100;
+            const regalo = reduceToSingleDigit(sumDigits(lastTwoYearDigits));
+            document.getElementById('regalo-result').textContent = regalo;
+
+            // Calcular Misión (Destino + Regalo)
+            const mision = reduceToSingleDigit(destino + regalo);
+            document.getElementById('mision-result').textContent = mision;
+
+            resultsDiv.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
